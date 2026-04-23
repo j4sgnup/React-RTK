@@ -71,3 +71,31 @@ export default defineConfig([
   },
 ])
 ```
+
+## Project details
+
+This repository is a small learning project demonstrating React + TypeScript + Vite with Redux Toolkit (RTK) for state management. The app fetches users from JSONPlaceholder and shows a users list and a user detail page.
+
+- Run locally:
+
+```bash
+npm install
+npm run dev
+```
+
+- Tests (Vitest + React Testing Library):
+
+```bash
+npm run test
+```
+
+- Key files:
+
+- `src/types/user.ts` — TypeScript interfaces for `User` and nested types.
+- `src/features/users/usersAPI.ts` — network helpers for users.
+- `src/features/users/usersSlice.ts` — RTK slice + async thunk for users.
+- `src/store.ts` — Redux store configuration.
+- `src/hooks.ts` — typed `useAppDispatch` / `useAppSelector` helpers.
+- `src/pages/UserListPage.tsx` and `src/pages/UserDetailPage.tsx` — pages.
+
+If you want a developer runbook for adding new RTK-powered features, see `rtk-pattern.md` in the repo root.
