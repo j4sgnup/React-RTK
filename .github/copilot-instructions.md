@@ -12,7 +12,7 @@ The app should stay intentionally small and easy to reason about:
 - Use Vite for tooling.
 - Use React Testing Library and Vitest for tests.
 
-The user wants guidance and implementation help in small steps, but does not want the project generated wholesale for them unless they explicitly ask for code to be written.
+The user wants guidance and implementation help in small steps, but does not want the project generated wholesale for them unless they explicitly ask for code to be written. Never offer the user to scaffold any files.
 
 ## Collaboration Style
 
@@ -218,6 +218,7 @@ Primary commands:
 
 If test scripts are missing, add Vitest wiring only when the user asks to set up tests fully.
 
+
 ## Default Assistant Behavior For Future Chats
 
 Assume the user wants:
@@ -227,5 +228,40 @@ Assume the user wants:
 - step-by-step implementation guidance
 - TypeScript-first answers
 - Redux Toolkit best practices without unnecessary complexity
+- no file change until explicitly asked.
+- at start of every new session, read the changelog.md
 
 Do not assume the user wants the entire application generated at once.
+
+### Changelog Maintenance (Guidelines for assistant & committers)
+
+Goal: keep `CHANGELOG.md` focused on project progress (combined/summarized), not a chronological commit log.
+
+Commit message conventions
+- Add a new changelog entry:
+  - Include a footer line: `Changelog: <Area> | <Short summary>`
+    - Example: `Changelog: Users | Add client-side pagination to Users table`
+- Update an existing changelog entry:
+  - Include a footer line with an identifier: `Changelog-ID: <id>`
+  - Optionally include `Changelog-Update: <short note>` to describe the update
+    - Example: `Changelog-ID: users-pagination-1` and `Changelog-Update: improve page-size options`
+
+Assistant behavior (when editing repo files or creating PR descriptions)
+- If commit/PR contains `Changelog-ID: <id>`, locate the existing changelog entry with that id in `CHANGELOG.md` and update that entry (append concise detail or replace short description).
+- Else if commit/PR contains `Changelog: <Area> | <summary>`, add a new, concise bullet under the appropriate section (create section if missing).
+- When multiple commits/PRs touch the same Area within a single PR, merge them into a single, combined bullet that captures the net progress.
+- Keep each bullet short, impact-focused, and avoid timeline/history details.
+- Use these sections in `CHANGELOG.md`: `### Features`, `### Fixes`, `### Chores`, `### Docs`.
+- Format for bullets:
+  - `- **Area:** Short, impact-focused summary. (id: <id>)`
+  - When adding a new entry without an explicit `Changelog-ID`, the assistant may generate a short id (e.g., `users-1`) and include it in the entry.
+
+Examples
+- Commit footer:
+  - `Changelog: Users | Add email column and responsive table`
+- Resulting changelog bullet:
+  - `- **Users:** Add email column and responsive table. (id: users-1)`
+
+Notes
+- The assistant should never add low-value, chronological commit details (author/time) to `CHANGELOG.md`.
+- If you want enforcement, add a commit-msg hook to require `Changelog` or `Changelog-ID` footers on commits that change user-visible features; ask me and I can scaffold the hook.
